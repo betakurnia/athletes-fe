@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Athlete Profile Input Form
 
-## Getting Started
+### Overview
 
-First, run the development server:
+In this task you'll be creating and deploying a simple, full-stack, responsive, single-page application in Node and Angular 1/ AngularJS (NOT Angular2+) or ReactJS.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### Requirements
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+I would like you to create a **multi-step** or **multi-screen** athlete profile form that gathers standard demographic, sports and event data. Here is a list of data points and sports you might want to use:
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+#### Data Points
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- `Name`
+- `Date of Birth`
+- `Location`
+- `Team` (e.g. New York Giants)
+- `Gender`
+- `Sports` (Can Multiple)
+- `About`
+- `Interests`
+- `Profile Image`
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+#### Sports
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Golf
+- Tennis
+- Cricket
+- Basketball
+- Baseball
+- American Football
+- Aquatics
+- Archery
+- Automobile Racing
+- Badminton
+- Beach Volleyball
+- Bobsleigh
+- Body Building
+- Boxing
+- Cross Country Running
+- Cross Country Skiing
+- Curling
+- Cycling
+- Darts
+- Decathlon
+- Down Hill Skiing
+- Equestrianism
+- eSports
+- Fencing
+- Field Hockey
+- Figure Skating
+- Gymnastics
+- Ice Hockey
+- Martial Arts
+- Mixed Martial Arts
+- Modern Pentathlon
+- Motorcycle Racing
+- Netball
+- Polo
+- Racquetball
+- Rowing
+- Rugby
+- Sailing
+- Softball
+- Shooting
+- Skateboarding
+- Skeet Shooting
+- Skeleton
+- Snow Boarding
+- Soccer (Football)
+- Squash
+- Surfing
+- Swimming
+- Track and Field
 
-## Learn More
+Here is a suggested organization of the form but use your best judgement and creativity:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Basic Info**: name, sport, gender, date of birth
+2. **About**: description, location, team etc
+3. **Summary**: show the athlete a wrap-up screen with the info they added, and give them a way to go back and edit if there are any mistake
+4. **Submit**: On submit, the payload should be sent to a simple end point which persists the profile. This should be saved to a simple free MongoDB instance, such as mongoAtlas.
+5. **Profile**: A well styled profile displaying all the information gathered about the user
+6. **List**: After submission I should see a list of all profiles I have created
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Here are the requirements for the API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. **Node/Express**
+2. **Mongoose ORM** (MongoDB)
+3. **3 End Points - POST, GET, PUT**
+4. **Request Param Validation - express-validator** (Bonus Feature)
 
-## Deploy on Vercel
+Please note:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- This is a **single-page application**. There shouldn't be page reloads between screens.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Time limits
+
+Please spend **no more than 5-hours** on this test.
+
+### Evaluation & priorities
+
+Within your brief **5 hour time limit** I hope you'll prioritize the following, in this order. Consider this an iterative process � get it working on sound principles first, then refine and polish as time allows.
+
+1. Make it work!
+2. Clean and clear code (hopefully you didn't sacrifice this to make it work)
+3. Project organization
+4. Planning: tools used, implementation strategy, basic UX concerns like what to ask for where
+5. Make it look good - just use Bootstrap, a Material theme, or whatever you're comfortable with
+6. Management of data, state, and events internally
+7. Code quality details
+
+- Type, variable, property checking
+- Failing fast, for better debugging
+
+8. Extra polish, concern and care will be noticed
+
+Less important details:
+
+- Tests are great, but I doubt you'll have time.
+
+### Hints
+
+- Be efficient! Please don't reinvent the wheel, use [generators]and other tools when they speed up your process and get you to your end goal faster.

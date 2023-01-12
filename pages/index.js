@@ -1,11 +1,134 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
+import React, { useEffect } from "react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import {
+  Container,
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  Button,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useFormik } from "formik";
+import { toast } from "react-toastify";
+import BasicInfo from "../components/BasicInfo";
+import About from "../components/About";
+import Profile from "../components/Profile";
+import * as yup from "yup";
 
-const inter = Inter({ subsets: ['latin'] })
+import httpClient from "../utils/httpClient";
 
-export default function Home() {
+const steps = ["Basic Info", "About", "Preview"];
+
+const useStyles = makeStyles({
+  body: {
+    "& > *:not(:last-child)": {
+      marginBottom: "16px",
+    },
+  },
+});
+
+export default function Home({ id, data }) {
+  const classes = useStyles();
+
+  const router = useRouter();
+
+  const formik = useFormik({
+    initialValues: {
+      id: undefined,
+      step: 0,
+      name: "",
+      dateOfBirth: new Date(),
+      location: "",
+      team: "",
+      gender: "",
+      sports: [],
+      description: "",
+      interests: "",
+      profileImage: "",
+    },
+    validationSchema: yup.object().shape({
+      name: yup.string().when("step", {
+        is: 0,
+        then: yup.string().required("Name is required"),
+      }),
+      dateOfBirth: yup.string().when("step", {
+        is: 0,
+        then: yup.string().required("Date Of Birth is required"),
+      }),
+      gender: yup.string().when("step", {
+        is: 0,
+        then: yup.string().required("Gender is required"),
+      }),
+      sports: yup.array().when("step", {
+        is: 0,
+        then: yup.array().required("Sports is required"),
+      }),
+      description: yup.string().when("step", {
+        is: 1,
+        then: yup.string().required("Description is required"),
+      }),
+      location: yup.string().when("step", {
+        is: 1,
+        then: yup.string().required("Location is required"),
+      }),
+      team: yup.string().when("step", {
+        is: 1,
+        then: yup.string().required("Team is required"),
+      }),
+      interests: yup.string().when("step", {
+        is: 1,
+        then: yup.string().required("Interests is required"),
+      }),
+    }),
+    onSubmit: async (values) => {
+      formik.setFieldValue("step", formik.values.step + 1);
+      if (!id) {
+        httpClient
+          .post(`/api/profile`, values)
+          .then((profile) => {
+            formik.setFieldValue("id", id);
+            router.push(`/?id=${profile.data._id}`);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+        return;
+      }
+      await httpClient
+        .put(`/api/profile?id=${id}`, values)
+        .then(() => {})
+        .catch((e) => {
+          console.error(e);
+        });
+    },
+  });
+
+  const validateForm = async () => {
+    const errors = await formik.validateForm();
+
+    if (Object.keys(errors).length !== 0) {
+      toast.error("All field is required");
+      return;
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    if (data) {
+      formik.setFieldValue("id", data._id);
+      formik.setFieldValue("name", data.name);
+      formik.setFieldValue("dateOfBirth", data.dateOfBirth);
+      formik.setFieldValue("location", data.location);
+      formik.setFieldValue("team", data.team);
+      formik.setFieldValue("gender", data.gender);
+      formik.setFieldValue("sports", data.sports);
+      formik.setFieldValue("description", data.description);
+      formik.setFieldValue("interests", data.interests);
+    }
+  }, [data]);
+
   return (
     <>
       <Head>
@@ -14,110 +137,92 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.js</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+      <Box my={5}>
+        <Container maxWidth="sm">
+          <>
+            <Stepper activeStep={formik.values.step} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            <Box my={3} className={classes.body}>
+              {formik.values.step === 0 && <BasicInfo formik={formik} />}
+              {formik.values.step === 1 && <About formik={formik} />}
+              {formik.values.step === 2 && (
+                <Profile
+                  formik={formik}
+                  name={formik.values.name}
+                  sports={formik.values.sports}
+                  gender={formik.values.gender}
+                  dateOfBirth={formik.values.dateOfBirth}
+                  description={formik.values.description}
+                  location={formik.values.location}
+                  team={formik.values.team}
+                  interests={formik.values.interests}
+                />
+              )}
+              <Box display="flex" justifyContent="space-between">
+                {formik.values.step !== 0 ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      formik.setFieldValue("step", formik.values.step - 1);
+                    }}
+                  >
+                    Previous
+                  </Button>
+                ) : (
+                  <div />
+                )}
+                {formik.values.step !== 2 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      if (validateForm()) {
+                        formik.handleSubmit();
+                      }
+                    }}
+                  >
+                    Next
+                  </Button>
+                )}
+                {formik.values.step === 2 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      router.push(`/preview/${formik.values.id}`);
+                    }}
+                  >
+                    Submit
+                  </Button>
+                )}
+              </Box>
+            </Box>
+          </>
+        </Container>
+      </Box>
     </>
-  )
+  );
+}
+
+export async function getServerSideProps(context) {
+  if (context.query.id) {
+    const response = await httpClient.get(
+      `/api/profile?id=${context.query.id}`
+    );
+    return {
+      props: { id: context.query.id || null, data: response.data || null },
+    };
+  }
+  return {
+    props: {
+      id: null,
+      data: null,
+    },
+  };
 }
